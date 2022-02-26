@@ -1,16 +1,34 @@
 import { useState } from "react";
-import axios from 'axios';
+import { message } from "antd";
+import axios from "axios";
+import { SyncOutlined } from "@ant-design/icons";
 
 const Register = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const hangleSubmit = async e => {
+  const hangleSubmit = async (e) => {
     e.preventDefault();
-    console.table({ name, email, password })
-    const { data } = await axios.post(`http://localhost:8000/api/register`)
-    console.log(data)
+    try {
+      setLoading(true);
+      const { data } = await axios.post('/api/register', {
+        name,
+        email,
+        password,
+      });
+      message.success(
+        "Registration successful. Please login to learn courses."
+      );
+      setLoading(false);
+      setName('');
+      setEmail('');
+      setPassword('')
+    } catch (error) {
+      message.error(error.response.data);
+      setLoading(false);
+    }
   };
 
   return (
@@ -44,7 +62,13 @@ const Register = () => {
 
           <br />
 
-          <button className="btn btn-block btn-primary p-2" type="submit">Submit</button>
+          <button
+            className="btn btn-block btn-primary p-2"
+            disabled={!name || !email || !password || loading}
+            type="submit"
+          >
+            {loading ? <SyncOutlined spin /> : "Submit"}
+          </button>
         </form>
       </div>
     </>
