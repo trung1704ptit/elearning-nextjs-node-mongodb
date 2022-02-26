@@ -1,14 +1,18 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { message } from "antd";
 import axios from "axios";
 import { SyncOutlined } from "@ant-design/icons";
 import Link from "next/link";
 import TopNav from "../components/TopNav";
+import { Context } from '../context'
+import { useRouter } from 'next/router'
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const { state, dispatch } = useContext(Context);
+  const router = useRouter()
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -18,9 +22,16 @@ const Login = () => {
         email,
         password,
       });
-      message.success(
-        "Login successful."
-      );
+      dispatch({
+        type: 'LOGIN',
+        payload: data
+      })
+
+      // save user in localstorage
+      window.localStorage.setItem('user', JSON.stringify(data));
+
+      router.push('/')
+
       setLoading(false);
       setEmail("");
       setPassword("");

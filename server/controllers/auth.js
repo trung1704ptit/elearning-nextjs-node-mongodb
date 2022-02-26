@@ -28,7 +28,6 @@ export const register = async (req, res) => {
       password: hashedPassword,
     });
     await user.save();
-    console.log("saved user", user);
     return res.json({ ok: true });
   } catch (err) {
     console.log(err);
@@ -73,3 +72,8 @@ export const login = async (req, res) => {
     return res.status(400).send("Error. Try again");
   }
 };
+
+
+export const logout = (req, res) => {
+  
+}
