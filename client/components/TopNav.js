@@ -13,7 +13,6 @@ const TopNav = () => {
   const [current, setCurrent] = useState("");
   useEffect(() => {
     typeof window === 'object' && setCurrent(window.location.pathname);
-    console.log(window.location.pathname);
   }, [typeof window === 'object' && window.location.pathname]);
 
   return (

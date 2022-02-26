@@ -36,7 +36,7 @@ const Register = () => {
   return (
     <>
       <TopNav />
-      <h1 className="jumbotron text-center bg-primary square">Register Page</h1>
+      <h1 className="jumbotron text-center bg-primary square">Register</h1>
       <div className="container col-md-4 offset-md-4 pd-5">
         <form onSubmit={hangleSubmit}>
           <input
@@ -74,7 +74,7 @@ const Register = () => {
           </button>
         </form>
         <p className="text-center p-3">
-          Alrady registered?{" "}
+          Already registered?{" "}
           <Link href="/login">
             <a>Login</a>
           </Link>
