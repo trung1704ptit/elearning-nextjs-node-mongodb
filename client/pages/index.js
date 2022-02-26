@@ -1,7 +1,10 @@
+import TopNav from "../components/TopNav";
+
 const Index = () => {
   return (
     <>
-    <h1 className="jumbotron text-center bg-primary square">Hello world</h1>
+    <TopNav />
+    <h1 className="jumbotron text-center bg-primary square">Online Education Marketplace</h1>
     <p>Welcome to tutorial</p>
     </>
   )
