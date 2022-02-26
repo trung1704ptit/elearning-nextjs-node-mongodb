@@ -2,6 +2,8 @@ import { useState } from "react";
 import { message } from "antd";
 import axios from "axios";
 import { SyncOutlined } from "@ant-design/icons";
+import Link from "next/link";
+import TopNav from "../components/TopNav";
 
 const Register = () => {
   const [name, setName] = useState("");
@@ -13,7 +15,7 @@ const Register = () => {
     e.preventDefault();
     try {
       setLoading(true);
-      const { data } = await axios.post('/api/register', {
+      const { data } = await axios.post("/api/register", {
         name,
         email,
         password,
@@ -22,9 +24,9 @@ const Register = () => {
         "Registration successful. Please login to learn courses."
       );
       setLoading(false);
-      setName('');
-      setEmail('');
-      setPassword('')
+      setName("");
+      setEmail("");
+      setPassword("");
     } catch (error) {
       message.error(error.response.data);
       setLoading(false);
@@ -33,6 +35,7 @@ const Register = () => {
 
   return (
     <>
+      <TopNav />
       <h1 className="jumbotron text-center bg-primary square">Register Page</h1>
       <div className="container col-md-4 offset-md-4 pd-5">
         <form onSubmit={hangleSubmit}>
@@ -70,6 +73,12 @@ const Register = () => {
             {loading ? <SyncOutlined spin /> : "Submit"}
           </button>
         </form>
+        <p className="text-center p-3">
+          Alrady registered?{" "}
+          <Link href="/login">
+            <a>Login</a>
+          </Link>
+        </p>
       </div>
     </>
   );
