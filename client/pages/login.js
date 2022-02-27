@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { message } from "antd";
 import axios from "axios";
 import { LoginOutlined, SyncOutlined } from "@ant-design/icons";
@@ -7,12 +7,19 @@ import TopNav from "../components/TopNav";
 import { Context } from "../context";
 import { useRouter } from "next/router";
 import { Form, Input, Button, Checkbox, Space } from "antd";
+import { routes, types } from '../utils/constants'
 
 const Login = () => {
   const [loading, setLoading] = useState(false);
-  const { state, dispatch } = useContext(Context);
+  const { state: { user }, dispatch } = useContext(Context);
   const router = useRouter();
   const [form] = Form.useForm();
+
+  useEffect(() => {
+    if (user) { 
+      router.push("/");
+    }
+  }, [user])
 
   const onFinish = async (values) => {
     try {
@@ -23,7 +30,7 @@ const Login = () => {
       });
 
       dispatch({
-        type: "LOGIN",
+        type: types.LOGIN,
         payload: data,
       });
 
@@ -99,7 +106,7 @@ const Login = () => {
               <Checkbox>Remember me</Checkbox>
               <p>
                 Don't have an account?{" "}
-                <Link href="/register">
+                <Link href={routes.REGISTER}>
                   <a>Register</a>
                 </Link>
               </p>

@@ -1,14 +1,17 @@
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { LoadingOutlined, UserAddOutlined } from "@ant-design/icons";
 import Link from "next/link";
 import TopNav from "../components/TopNav";
 import { Form, Input, Button, message } from "antd";
 import { useRouter } from "next/router";
+import { Context } from "../context";
+import { routes } from "../utils/constants";
 
 const Register = () => {
   const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
+  const { state: { user }, dispatch } = useContext(Context);
   const router = useRouter();
 
   const onFinish = async (values) => {
@@ -22,13 +25,20 @@ const Register = () => {
       message.success(
         "Registration successful. Please login to learn courses."
       );
-      router.push("/login");
+      router.push(routes.LOGIN);
       setLoading(false);
     } catch (error) {
       message.error(error.response.data);
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (user) { 
+      router.push("/");
+    }
+  }, [user])
+
 
   return (
     <>
