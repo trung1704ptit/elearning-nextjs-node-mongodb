@@ -1,32 +1,29 @@
 import { useState } from "react";
-import { message } from "antd";
 import axios from "axios";
-import { SyncOutlined } from "@ant-design/icons";
+import { LoadingOutlined, UserAddOutlined } from "@ant-design/icons";
 import Link from "next/link";
 import TopNav from "../components/TopNav";
+import { Form, Input, Button, message } from "antd";
+import { useRouter } from "next/router";
 
 const Register = () => {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [form] = Form.useForm();
+  const router = useRouter();
 
-  const hangleSubmit = async (e) => {
-    e.preventDefault();
+  const onFinish = async (values) => {
     try {
       setLoading(true);
       const { data } = await axios.post("/api/register", {
-        name,
-        email,
-        password,
+        name: values.name,
+        email: values.email,
+        password: values.password,
       });
       message.success(
         "Registration successful. Please login to learn courses."
       );
+      router.push("/login");
       setLoading(false);
-      setName("");
-      setEmail("");
-      setPassword("");
     } catch (error) {
       message.error(error.response.data);
       setLoading(false);
@@ -37,48 +34,90 @@ const Register = () => {
     <>
       <TopNav />
       <h1 className="jumbotron text-center bg-primary square">Register</h1>
-      <div className="container col-md-4 offset-md-4 pd-5">
-        <form onSubmit={hangleSubmit}>
-          <input
-            type="text"
-            className="form-control mb-4 p-4"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="Enter name"
-          />
-
-          <input
-            type="email"
-            className="form-control mb-4 p-4"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Enter email"
-          />
-
-          <input
-            type="password"
-            className="form-control mb-4 p-4"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Enter password"
-          />
-
-          <br />
-
-          <button
-            className="btn btn-block btn-primary p-2"
-            disabled={!name || !email || !password || loading}
-            type="submit"
+      <div className="auth-form">
+        <Form
+          name="basic"
+          form={form}
+          initialValues={{
+            remember: true,
+          }}
+          onFinish={onFinish}
+          autoComplete="off"
+          layout="vertical"
+        >
+          <Form.Item
+            label="Name"
+            name="name"
+            validateTrigger="onSubmit"
+            rules={[
+              {
+                required: true,
+                message: "Please input your name!",
+              },
+            ]}
           >
-            {loading ? <SyncOutlined spin /> : "Submit"}
-          </button>
-        </form>
-        <p className="text-center p-3">
-          Already registered?{" "}
-          <Link href="/login">
-            <a>Login</a>
-          </Link>
-        </p>
+            <Input size="large" />
+          </Form.Item>
+
+          <Form.Item
+            label="Email"
+            name="email"
+            validateTrigger="onSubmit"
+            rules={[
+              {
+                type: "email",
+                message: "The input is not valid E-mail!",
+              },
+              {
+                required: true,
+                message: "Please input your email!",
+              },
+            ]}
+          >
+            <Input size="large" />
+          </Form.Item>
+
+          <Form.Item
+            label="Password"
+            name="password"
+            validateTrigger="onSubmit"
+            rules={[
+              {
+                required: true,
+                message: "Please input your password!",
+              },
+              {
+                min: 6,
+                max: 64,
+                message: "Password length must be at least 6 characters.",
+              },
+            ]}
+          >
+            <Input.Password size="large" />
+          </Form.Item>
+
+          <Form.Item>
+            <div>
+              Already have an account?{" "}
+              <Link href="/login">
+                <a>Login</a>
+              </Link>
+            </div>
+          </Form.Item>
+
+          <Form.Item>
+            <Button
+              block
+              disabled={loading}
+              type="primary"
+              htmlType="submit"
+              size="large"
+              icon={loading ? <LoadingOutlined spin /> : <UserAddOutlined />}
+            >
+              Register
+            </Button>
+          </Form.Item>
+        </Form>
       </div>
     </>
   );

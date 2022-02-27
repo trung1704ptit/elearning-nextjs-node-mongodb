@@ -6,3 +6,9 @@
   background-image: linear-gradient(to right, #007bff, #000);
   color: #fff;
 }
+
+.auth-form {
+  padding: 50px;
+  margin: auto;
+  max-width: 480px;
+}

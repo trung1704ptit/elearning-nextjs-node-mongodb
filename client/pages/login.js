@@ -1,40 +1,38 @@
 import { useContext, useState } from "react";
 import { message } from "antd";
 import axios from "axios";
-import { SyncOutlined } from "@ant-design/icons";
+import { LoginOutlined, SyncOutlined } from "@ant-design/icons";
 import Link from "next/link";
 import TopNav from "../components/TopNav";
-import { Context } from '../context'
-import { useRouter } from 'next/router'
+import { Context } from "../context";
+import { useRouter } from "next/router";
+import { Form, Input, Button, Checkbox, Space } from "antd";
 
 const Login = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const { state, dispatch } = useContext(Context);
-  const router = useRouter()
+  const router = useRouter();
+  const [form] = Form.useForm();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const onFinish = async (values) => {
     try {
       setLoading(true);
       const { data } = await axios.post("/api/login", {
-        email,
-        password,
+        email: values.email,
+        password: values.password,
       });
+
       dispatch({
-        type: 'LOGIN',
-        payload: data
-      })
+        type: "LOGIN",
+        payload: data,
+      });
 
       // save user in localstorage
-      window.localStorage.setItem('user', JSON.stringify(data));
+      window.localStorage.setItem("user", JSON.stringify(data));
 
-      router.push('/')
+      router.push("/");
 
       setLoading(false);
-      setEmail("");
-      setPassword("");
     } catch (error) {
       message.error(error.response.data);
       setLoading(false);
@@ -45,40 +43,82 @@ const Login = () => {
     <>
       <TopNav />
       <h1 className="jumbotron text-center bg-primary square">Login</h1>
-      <div className="container col-md-4 offset-md-4 pd-5">
-        <form onSubmit={handleSubmit}>
-          <input
-            type="email"
-            className="form-control mb-4 p-4"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Enter email"
-          />
-
-          <input
-            type="password"
-            className="form-control mb-4 p-4"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Enter password"
-          />
-
-          <br />
-
-          <button
-            className="btn btn-block btn-primary p-2"
-            disabled={!email || !password || loading}
-            type="submit"
+      <div className="auth-form">
+        <Form
+          name="basic"
+          form={form}
+          initialValues={{
+            remember: true,
+          }}
+          onFinish={onFinish}
+          autoComplete="off"
+          layout="vertical"
+        >
+          <Form.Item
+            label="Email"
+            name="email"
+            validateTrigger="onSubmit"
+            rules={[
+              {
+                type: "email",
+                message: "The input is not valid E-mail!",
+              },
+              {
+                required: true,
+                message: "Please input your email!",
+              },
+            ]}
           >
-            {loading ? <SyncOutlined spin /> : "Login"}
-          </button>
-        </form>
-        <p className="text-center p-3">
-          Don't have an account?{" "}
-          <Link href="/register">
-            <a>Register</a>
-          </Link>
-        </p>
+            <Input size="large" />
+          </Form.Item>
+
+          <Form.Item
+            label="Password"
+            name="password"
+            validateTrigger="onSubmit"
+            rules={[
+              {
+                required: true,
+                message: "Please input your password!",
+              },
+              {
+                min: 6,
+                max: 64,
+                message: "Password length must be at least 6 characters.",
+              },
+            ]}
+          >
+            <Input.Password size="large" />
+          </Form.Item>
+
+          <Form.Item name="remember" valuePropName="checked">
+            <Space
+              align="baseline"
+              style={{ width: "100%", justifyContent: "space-between" }}
+            >
+              <Checkbox>Remember me</Checkbox>
+              <p>
+                Don't have an account?{" "}
+                <Link href="/register">
+                  <a>Register</a>
+                </Link>
+              </p>
+            </Space>
+          </Form.Item>
+
+          <Form.Item>
+            <Button
+              block
+              disabled={loading}
+              type="primary"
+              htmlType="submit"
+              size="large"
+              icon={<LoginOutlined />}
+            >
+              Login
+            </Button>
+          </Form.Item>
+        </Form>
       </div>
     </>
   );

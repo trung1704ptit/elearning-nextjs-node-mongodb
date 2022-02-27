@@ -1,19 +1,22 @@
 import { useState, useEffect, useContext } from "react";
-import { Menu } from "antd";
+import { Menu, message } from "antd";
 import Link from "next/link";
 import {
   LoginOutlined,
   UserAddOutlined,
   AppstoreOutlined,
+  LogoutOutlined,
 } from "@ant-design/icons";
 import axios from 'axios';
 import { Context } from '../context'
+import { useRouter } from "next/router";
 
 const { Item } = Menu;
 
 const TopNav = () => {
   const [current, setCurrent] = useState("");
   const { state, dispatch } = useContext(Context);
+  const router = useRouter();
 
   useEffect(() => {
     typeof window === 'object' && setCurrent(window.location.pathname);
@@ -21,11 +24,13 @@ const TopNav = () => {
 
   const logout = async () => {
     dispatch({
-      type: 'LOGOUT'
-    })
+      type: "LOGOUT",
+    });
 
-    window.localStorage.removeItem('user');
-    const { data} = await axios.get('/api/logout');
+    window.localStorage.removeItem("user");
+    const { data } = await axios.get("/api/logout");
+    message.success(data.message)
+    router.push('/login');
   }
 
   return (
@@ -56,6 +61,10 @@ const TopNav = () => {
         <Link href="/register">
           <a>Register</a>
         </Link>
+      </Item>
+
+      <Item onClick={logout} icon={<LogoutOutlined />}>
+        Logout
       </Item>
     </Menu>
   );
