@@ -7,7 +7,8 @@ const types = {
 const routes = {
   LOGIN: '/login',
   REGISTER: '/register',
-  DASHBOARD: '/dashboard'
+  DASHBOARD: '/dashboard',
+  USER: '/user'
 }
 
 export {

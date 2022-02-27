@@ -15,7 +15,7 @@ import { Context } from "../context";
 import { useRouter } from "next/router";
 import { routes, types } from "../utils/constants";
 
-const { Item, SubMenu } = Menu;
+const { Item, SubMenu, ItemGroup } = Menu;
 
 const TopNav = () => {
   const [current, setCurrent] = useState("");
@@ -39,53 +39,67 @@ const TopNav = () => {
   };
 
   return (
-    <Menu mode="horizontal" selectedKeys={[current]}>
-      <Item
-        key="/"
-        onClick={(e) => setCurrent(e.key)}
-        icon={<AppstoreOutlined />}
-      >
-        <Link href="/">
-          <a>App</a>
-        </Link>
-      </Item>
-
-      {!user && (
-        <>
-          <Item
-            key={routes.LOGIN}
-            onClick={(e) => setCurrent(e.key)}
-            icon={<LoginOutlined />}
-          >
-            <Link href={routes.LOGIN}>
-              <a>Login</a>
-            </Link>
-          </Item>
-          <Item
-            key={routes.REGISTER}
-            onClick={(e) => setCurrent(e.key)}
-            icon={<UserAddOutlined />}
-          >
-            <Link href={routes.REGISTER}>
-              <a>Register</a>
-            </Link>
-          </Item>
-        </>
-      )}
-
-      {user && (
-        <SubMenu
-          icon={<UserOutlined />}
-          style={{ marginLeft: "auto" }}
-          title={user && user.name}
+    <div>
+      <Menu mode="horizontal" selectedKeys={[current]}>
+        <Item
+          key="/"
+          onClick={(e) => setCurrent(e.key)}
+          icon={<AppstoreOutlined />}
         >
-          <Item onClick={logout} icon={<LogoutOutlined />}>
-            Logout
-          </Item>
-          <Item icon={<SettingOutlined />}>Setting</Item>
-        </SubMenu>
-      )}
-    </Menu>
+          <Link href="/">
+            <a>App</a>
+          </Link>
+        </Item>
+
+        {!user && (
+          <>
+            <Item
+              key={routes.LOGIN}
+              onClick={(e) => setCurrent(e.key)}
+              icon={<LoginOutlined />}
+            >
+              <Link href={routes.LOGIN}>
+                <a>Login</a>
+              </Link>
+            </Item>
+            <Item
+              key={routes.REGISTER}
+              onClick={(e) => setCurrent(e.key)}
+              icon={<UserAddOutlined />}
+            >
+              <Link href={routes.REGISTER}>
+                <a>Register</a>
+              </Link>
+            </Item>
+          </>
+        )}
+
+        {user && (
+          <SubMenu
+            icon={<UserOutlined />}
+            style={{ marginLeft: "auto" }}
+            title={user && user.name}
+          >
+            <ItemGroup>
+              <Item icon={<SettingOutlined />}>
+                <Link href={routes.USER}>
+                  <a>Profile</a>
+                </Link>
+              </Item>
+              <Item icon={<SettingOutlined />}>
+                <Link href={routes.DASHBOARD}>
+                  <a>Dashboard</a>
+                </Link>
+              </Item>
+              <Item icon={<SettingOutlined />}>Setting</Item>
+              <Item onClick={logout} icon={<LogoutOutlined />}>
+                Logout
+              </Item>
+            </ItemGroup>
+          </SubMenu>
+        )}
+      </Menu>
+    </div>
   );
 };
 

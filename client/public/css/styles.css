@@ -5,10 +5,30 @@
 .jumbotron {
   background-image: linear-gradient(to right, #007bff, #000);
   color: #fff;
+  padding: 5vw;
+  text-align: center;
 }
 
 .auth-form {
   padding: 50px;
   margin: auto;
   max-width: 480px;
+}
+
+.loading-full-screen {
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  background-color: #fff;
+  top: 0;
+  left: 0;
+}
+
+.loading-full-screen div, .loading-full-block div {
+  margin: auto;
+}
+
+.loading-full-block {
+  display: flex;
 }

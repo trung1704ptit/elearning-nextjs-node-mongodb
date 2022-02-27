@@ -48,7 +48,6 @@ const Login = () => {
 
   return (
     <>
-      <TopNav />
       <h1 className="jumbotron text-center bg-primary square">Login</h1>
       <div className="auth-form">
         <Form

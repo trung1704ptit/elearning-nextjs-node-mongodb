@@ -82,3 +82,17 @@ export const logout = (req, res) => {
     console.log(error)
   }
 }
+
+export const currentUser = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id).select("-password").exec();
+    return res.json({ success: true });
+  } catch (err) {
+    console.log(err)
+  }
+}
+
+
+export const sendTestEmail = async (req, res) => {
+  return res.json({ ok: true });
+}
