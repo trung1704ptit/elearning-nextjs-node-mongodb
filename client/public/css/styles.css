@@ -25,7 +25,8 @@
   left: 0;
 }
 
-.loading-full-screen div, .loading-full-block div {
+.loading-full-screen div,
+.loading-full-block div {
   margin: auto;
 }
 
