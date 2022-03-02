@@ -34,8 +34,11 @@ const userSchema = new Schema(
     stripe_seller: {},
     stripeSession: {},
     passwordResetCode: {
-      data: String,
+      type: String,
       default: ''
+    },
+    passwordResetCodeExpired: {
+      type: Date,
     }
   },
   { timestamps: true }
