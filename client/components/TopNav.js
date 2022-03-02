@@ -79,6 +79,7 @@ const TopNav = () => {
             icon={<UserOutlined />}
             style={{ marginLeft: "auto" }}
             title={user && user.name}
+            key="submenu"
           >
             <ItemGroup>
               <Item icon={<SettingOutlined />}>

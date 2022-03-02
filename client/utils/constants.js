@@ -8,7 +8,8 @@ const routes = {
   LOGIN: '/login',
   REGISTER: '/register',
   DASHBOARD: '/dashboard',
-  USER: '/user'
+  USER: '/user',
+  FORGOT_PASSWORD: 'forgot-password'
 }
 
 export {

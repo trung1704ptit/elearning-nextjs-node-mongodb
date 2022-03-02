@@ -1,8 +1,8 @@
 import User from "../models/user";
 import { hashPassword, comparePassword } from "../utils/auth";
 import jwt from "jsonwebtoken";
-import AWS from 'aws-sdk';
-
+import AWS from "aws-sdk";
+import { nanoid } from "nanoid";
 
 const awsConfig = {
   accessKeyId: process.env.AWS_ACCESS_KEY_ID,
@@ -11,7 +11,7 @@ const awsConfig = {
   apiVerison: process.env.AWS_API_VERSION,
 };
 
-const SES = new AWS.SES(awsConfig)
+const SES = new AWS.SES(awsConfig);
 
 export const register = async (req, res) => {
   try {
@@ -76,7 +76,7 @@ export const login = async (req, res) => {
       // send user as json response
       return res.json(user);
     } else {
-      return res.status(400).send('Username or password incorrect.')
+      return res.status(400).send("Username or password incorrect.");
     }
   } catch (error) {
     console.log(error);
@@ -84,25 +84,23 @@ export const login = async (req, res) => {
   }
 };
 
-
 export const logout = (req, res) => {
   try {
-    res.clearCookie('token');
-    return res.json({ message: 'Signout successful'})
+    res.clearCookie("token");
+    return res.json({ message: "Signout successful" });
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
-}
+};
 
 export const currentUser = async (req, res) => {
   try {
     const user = await User.findById(req.user._id).select("-password").exec();
     return res.json({ success: true });
   } catch (err) {
-    console.log(err)
+    console.log(err);
   }
-}
-
+};
 
 export const sendTestEmail = async (req, res) => {
   // return res.json({ ok: true });
@@ -129,11 +127,81 @@ export const sendTestEmail = async (req, res) => {
     },
   };
 
-  const emailSent = SES.sendEmail(params).promise()
-  emailSent.then(data => {
-    res.json({ ok: true });
-  })
-  .catch (err => {
+  const emailSent = SES.sendEmail(params).promise();
+  emailSent
+    .then((data) => {
+      res.json({ ok: true });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
+export const forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+    const shortCode = nanoid(6).toUpperCase();
+    const user = await User.findOneAndUpdate(
+      { email },
+      { passwordResetCode: shortCode }
+    );
+
+    if (!user) return res.status(400).send("User not found");
+
+    // prepare for email
+    const params = {
+      Source: process.env.EMAIL_FROM,
+      Destination: { ToAddresses: [email] },
+      ReplyToAddresses: [process.env.EMAIL_FROM],
+      Message: {
+        Body: {
+          Html: {
+            Charset: "UTF-8",
+            Data: `
+            <html>
+              <h1>Reset password</h1>
+              <p>Please use this code to reset your password</p>
+              <h2 style="color:red;">${shortCode}</h2>
+              <i>onino-elearning.com</i>
+            </html>
+          `,
+          },
+        },
+        Subject: {
+          Charset: "UTF-8",
+          Data: "Onino Reset Password",
+        },
+      },
+    };
+
+    const emailSent = SES.sendEmail(params).promise();
+    emailSent
+      .then((data) => {
+        console.log(data);
+        return res.status(200).send({ ok: true });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  } catch (err) {
     console.log(err);
-  })
+  }
+};
+
+
+export const resetPassword = async (req, res) => {
+  try {
+    const { email, password, code } = req.body;
+    // console.log(email, password, code)
+    const hashedPassword = await hashPassword(password);
+    const user = User.findOneAndUpdate(
+      { email, passwordResetCode: code },
+      { password: hashedPassword, passwordResetCode: "" }
+    ).exec();
+
+    return res.status(200).send({ ok: true })
+  } catch (error) {
+    console.table(error);
+    return res.status(400).send('Error! try again.')
+  }
 }

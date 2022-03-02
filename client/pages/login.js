@@ -97,16 +97,21 @@ const Login = () => {
             <Input.Password size="large" />
           </Form.Item>
 
-          <Form.Item name="remember" valuePropName="checked">
+          <Form.Item name="remember">
             <Space
               align="baseline"
               style={{ width: "100%", justifyContent: "space-between" }}
             >
-              <Checkbox>Remember me</Checkbox>
+              {/* <Checkbox>Remember me</Checkbox> */}
               <p>
                 Don't have an account?{" "}
                 <Link href={routes.REGISTER}>
                   <a>Register</a>
+                </Link>
+              </p>
+              <p>
+                <Link href={routes.FORGOT_PASSWORD}>
+                  <a>Forgot password?</a>
                 </Link>
               </p>
             </Space>
